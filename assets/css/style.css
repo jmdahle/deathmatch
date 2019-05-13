@@ -1,0 +1,53 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18pt;
+}
+
+#gameMain, #arena, #charContainer, #heroContainer, #opponentContainer, #enemyContainer {
+    border: 1px solid red;
+}
+
+#gameMain {
+    width: 960px;
+    margin: 0 auto;
+    background-color: lightgray;
+}
+
+#charContainer {
+    display: inline; 
+}
+
+#message {
+    font-weight: bold;
+}
+.divHeading {
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+.charimage {
+    width: 50px;
+}
+.character {
+    width: 120px;
+    height: 120px;
+    font-size: 10pt;
+    background-color: white;
+    margin: 10px;
+}
+
+.char {
+    border: 4pt solid blue;
+}
+
+.hero {
+    border: 4pt solid green;
+}
+
+.opponent {
+    border: 4pt solid red;
+}
+
+.enemy {
+    border: 4pt solid orange;
+}
