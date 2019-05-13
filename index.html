@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +11,38 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
     <title>Death Match</title>
 </head>
+
 <body>
-
-    <!-- <button id="char3" class="character" charindex="3">
-        Jormungandr<br>
-        <img class="charimage" src="./assets/images/jormungandr.jpg ">
-        <br>180 hp
-    </button> -->
-
+    <div id="gameMain" class="container">
+        <div id="messageContainer">
+            <p id="gameMessage"></p>
+        </div>
+        <div id="charContainer" class="char">
+            <p class="divHeading">Available Characters</p>
+        </div>
+        <div id="arena">
+            <div id="heroContainer" class="hero">
+                <p class="divHeading">Your Hero</p>
+            </div>
+            <div id="arenaDivider">
+                <button id="btnAttack" type="button" value="attack">Attack!</button>
+            </div>
+            <div id="opponentContainer" class="opponent">
+                <p class="divHeading">Current Opponent</p>
+            </div>
+        </div>
+        <div id="enemyContainer" class="enemy">
+            <p class="divHeading">Enemies Remaining</p>
+        </div>
+        <div id="graveyardContainer">
+            <p class="divHeading">Graveyard</p>
+        </div>
+    </div>
     <!-- include JQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <!-- include death match javascript-->
     <script src="assets/javascript/javascript.js"></script>
 </body>
+
 </html>
