@@ -6,10 +6,14 @@ $(document).ready(function () {
     // initialize global variables
     var heroSelected = false;
     var opponentSelected = false;
+    var characters = [];   
+    var charButton = []; 
     var enemies = [];
+    var enemyButton = [];
     var hero;
+    var heroButton;
     var opponent;
-    var characters = [];    
+    var oppButton;
 
     // game character constuctor
     function GameCharacter(name, hp, bap, loc) {
@@ -31,67 +35,17 @@ $(document).ready(function () {
     characters = [gChar1, gChar2, gChar3, gChar4];
 
     // create game containers and buttons
-    // DIV main container
-    var gameMainDiv = $("<div>");
-    gameMainDiv.attr("id", "gameMain");
-    gameMainDiv.attr("class", "container");
-    $("body").append(gameMainDiv);
-    // DIV to hold message area
-    var messageDiv = $("<div>");
-    messageDiv.attr("id", "messageContainer");
-    $("#gameMain").append(messageDiv);
-    var messageP = $("<p>");
-    messageP.attr("id", "gameMessage");
-    messageP.text("Test text");
-    messageDiv.append(messageP);
-    // DIV to hold character selection
-    var characterDiv = $("<div>");
-    characterDiv.attr("id", "charContainer");
-    characterDiv.attr("class", "char");
-    characterDiv.html("<p class='divHeading'>Available characters:</p>");
-    $("#gameMain").append(characterDiv);
-    // characters inside character selection
+    // characters inside character selection 
     for (var i = 0; i < characters.length; i++) {
-        var charButton = $("<button>");
-        charButton.attr("id", "char" + i);
-        charButton.attr("class", "character char");
-        charButton.attr("charindex", i);
-        charButton.text(characters[i].characterName);
-        charButton.html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br>" + characters[i].healthPoints + "hp");
-        charButton.on("click", chooseHero);
-        $("#charContainer").append(charButton);
+        charButton[i] = $("<button>");
+        charButton[i].attr("id", "char" + i);
+        charButton[i].attr("class", "character char");
+        charButton[i].attr("state", "char");
+        charButton[i].attr("charindex", i);
+        charButton[i].html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
+        charButton[i].on("click", clickChar);
+        $("#charContainer").append(charButton[i]);
     }
-    // DIV to hold "battle arena"
-    var arenaDiv = $("<div>");
-    arenaDiv.attr("id", "arena");
-    $("#gameMain").append(arenaDiv);
-    // DIV to hold hero selected
-    var heroDiv = $("<div>");
-    heroDiv.attr("id", "heroContainer");
-    heroDiv.attr("class", "hero");
-    heroDiv.html("<p class='divHeading'>Your Hero</p>");
-    $("#arena").append(heroDiv);
-    // create an attack button
-    var buttonAttack = $("<button>");
-    buttonAttack.attr("id", "btnAttack");
-    buttonAttack.attr("type", "button");
-    buttonAttack.attr("value", "attack");
-    buttonAttack.on("click", attackOpponent);
-    buttonAttack.text("Attack!");
-    $("#arena").append(buttonAttack);
-    // DIV to hold opponent
-    var opponentDiv = $("<div>");
-    opponentDiv.attr("id", "opponentContainer");
-    opponentDiv.attr("class", "opponent");
-    opponentDiv.html("<p class='divHeading'>Current Opponent</p>");
-    $("#arena").append(opponentDiv);
-    // DIV to hold enemies
-    var enemyDiv = $("<div>");
-    enemyDiv.attr("id", "enemyContainer");
-    enemyDiv.attr("class", "enemy");
-    enemyDiv.html("<p class='divHeading'>Enemies Remaining</p>");
-    $("#gameMain").append(enemyDiv);
-
     // initial game messaghe
     postMessage("Choose a hero from the list of characters to begin.");
 
@@ -107,40 +61,47 @@ $(document).ready(function () {
         $("#gameMessage").text(msg);
     }
 
+    // handle clicking character
+    function clickChar(event) {
+        // branch to function based on state
+        currState = $(this).attr("state")
+        currIndex = $(this).attr("charindex");
+        switch (currState) {
+            case "char":
+                if (!heroSelected) {
+                    // if the character is in the char area, and a hero has not been selected, select the hero, move the rest to enemy
+                    chooseHero(currIndex);
+                }
+                break;
+        }
+        
+    }
     // handle hero selection
-    function chooseHero(event) {
+    function chooseHero(heroindex) {
         if (!heroSelected) {
-            // "this" is the specific button clicked    
             // user chooses a character to play as hero
-            var userHeroChoice = parseInt($(this).attr("charindex"));
-            console.log(userHeroChoice + " = " + characters[userHeroChoice].characterName); // DEBUG    
-            hero = characters[userHeroChoice]; // global variable re-assignment
-            // add hero to heroContainer
-            var heroButton = $("<button>");
-            heroButton.attr("id", "hero");
+            heroindex = parseInt(heroindex);
+            hero = characters[heroindex]; // global variable re-assignment
+            // move hero to heroContainer
+            heroButton = $("#char" + heroindex);
             heroButton.attr("class", "character hero");
-            heroButton.text(hero.characterName);
-            heroButton.html(hero.characterName + "<br><img class='charimage' src='" + hero.charImage + "'><br>" + hero.healthPoints + "hp");
+            charButton[heroindex].remove();
             $("#heroContainer").append(heroButton);
             // cycle through characters assigning the remaining characters to enemies
             for (var i = 0; i < characters.length; i++) {
-                if (!(i === userHeroChoice)) {
+                if (!(i === heroindex)) {
                     enemies.push(characters[i]);
-                    var enemyIndex = enemies.length - 1;
                     // add enemies to enemyContainer
-                    var enemyButton = $("<button>");
-                    enemyButton.attr("id", "enemy" + enemyIndex);
-                    enemyButton.attr("class", "character enemy");
-                    enemyButton.attr("enemyindex", enemyIndex);
-                    enemyButton.text(enemies[enemyIndex].characterName);
-                    enemyButton.html(enemies[enemyIndex].characterName + "<br><img class='charimage' src='" + enemies[enemyIndex].charImage + "'><br>" + enemies[enemyIndex].healthPoints + "hp");
-                    enemyButton.on("click", chooseOpponent);
-                    $("#enemyContainer").append(enemyButton);
+                    enemyButton[i] = $("#char" + i);
+                    enemyButton[i].attr("class", "character enemy");
+                    enemyButton[i].on("click", chooseOpponent);
+                    charButton[i].remove();
+                    $("#enemyContainer").append(enemyButton[i]);
                 }
             }
             heroSelected = true; // global variable re-assignment
             postMessage("You seleted " + hero.characterName + " as your hero.  Now select an opponent from the remaining enemies");
-            $(".char").hide();
+            // $(".char").hide();
         }
     }
 
@@ -148,17 +109,14 @@ $(document).ready(function () {
     // $(".enemy").on("click", function () {
     function chooseOpponent(event) {
         if (!opponentSelected) {
-            var userEnemyChoice = parseInt($(event.currentTarget).attr("enemyindex"));
-            opponent = enemies[userEnemyChoice];
-            enemies.splice(userEnemyChoice, 1);
-            // remove opponent from enemyContainer
-            $("#enemy" + userEnemyChoice).remove();
+            var userEnemyChoice = parseInt($(event.currentTarget).attr("charindex"));
+            opponent = characters[userEnemyChoice];
             // add opponent to opponentContainer
-            var opponentButton = $("<button>");
-            opponentButton.attr("id", "opponent");
-            opponentButton.attr("class", "character opponent");
-            opponentButton.text(opponent.characterName);
-            opponentButton.html(opponent.characterName + "<br><img class='charimage' src='" + opponent.charImage + "'><br>" + opponent.healthPoints + "hp");            $("#opponentContainer").append(opponentButton);
+            oppButton = $("#char" + userEnemyChoice);
+            oppButton.attr("class", "character opponent");
+            $("#opponentContainer").append(oppButton);
+            // remove opponent from enemyContainer
+            $("#char" + userEnemyChoice).remove();
             opponentSelected = true;
             postMessage("You seleted " + opponent.characterName + " as your opponent.  Click the 'attack' button to attack your opponent until one of you is defeated.");
 
