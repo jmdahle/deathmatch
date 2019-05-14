@@ -43,30 +43,10 @@ $(document).ready(function () {
         charButton[i].attr("zone", "char");
         charButton[i].attr("charindex", i);
         charButton[i].html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
-        charButton[i].on("click", clickChar);
+        charButton[i].on("click", chooseHero);
         $("#charContainer").append(charButton[i]);
     }
-    // place charButtons in the correct zones
     
-    // function charZones() {
-    //     alert ("alloc all chars to zones");
-    //     for (var i = 0; i < characters.length; i++) {
-    //         thisButton = charButton[i];
-    //         thisZone = charButton[i].attr("zone");
-    //         charButton[i].remove();
-    //         swtich (thisZone) {
-    //             case "char":
-    //                 $("#charContainer").append(thisButton);
-    //                 break;
-    //             case: "hero":
-    //                 $("heroContainer").append(thisButton);
-    //                 break;
-    //         }
-    //     }
-    // }
-
-    // charZones();
-
     // initial game messaghe
     postMessage("Choose a hero from the list of characters to begin.");
 
@@ -82,32 +62,11 @@ $(document).ready(function () {
         $("#gameMessage").text(msg);
     }
 
-    // handle clicking character
-    function clickChar(event) {
-        alert ("character clicked");
-        // branch to function based on state
-        currZone = $(this).attr("zone")
-        currIndex = $(this).attr("charindex");
-        switch (currZone) {
-            case "char":
-                if (!heroSelected) {
-                    // if the character is in the char zone, and a hero has not been selected, select the hero, move the rest to enemy
-                    chooseHero(currIndex);
-                }
-                break;
-            case "enemy":
-                if ((!opponentSelected) && (heroSelected))  {
-                    // if the character is in the enemy zone, and the hero has been selected, select the opponent
-                    chooseOpponent(currIndex);
-                }
-        }
-        
-    }
     // handle hero selection
-    function chooseHero(heroindex) {
+    function chooseHero(event) {
         if (!heroSelected) {
             // user chooses a character to play as hero
-            heroindex = parseInt(heroindex);
+            heroindex = parseInt($(this).attr("charindex"));
             hero = characters[heroindex]; // global variable re-assignment
             // move hero to heroContainer
             heroButton = $("#char" + heroindex);
@@ -123,7 +82,9 @@ $(document).ready(function () {
                     enemyButton[i] = $("#char" + i);
                     enemyButton[i].attr("class", "character enemy");
                     enemyButton[i].attr("zone","enemy");
-                    enemyButton[i].on("click", clickChar);
+                    enemyButton[i].on("click", function () {
+                        alert("ok");
+                    });
                     charButton[i].remove();
                     $("#enemyContainer").append(enemyButton[i]);
                 }
