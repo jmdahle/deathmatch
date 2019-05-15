@@ -1,13 +1,41 @@
-#gameMain, #titleContainer, #messageContainer, #charContainer, #arena, #enemyContainer, #graveyardContainer {
-    border: 1px solid red;
+#characterContainer, #enemyContainer, #graveyardContainer {
+    border-radius: 25px;
+    margin: 10px 0px 10px 10px;
+    background-color: #f0f0f0;
 }
 
-#heroContainer, #arenaDivider, #opponentContainer {
-    border: 1px solid blue;
+#characterContainer {
+    border: 2px solid blue;
 }
+
+#enemyContainer {
+    border: 2px solid orange;
+}
+
+#graveyardContainer {
+    border: 2px solid black;
+}
+
+#gameMain, #titleContainer, #messageContainer {
+    margin: 10px;
+}
+
+#arena {
+    text-align: center;
+    margin: 10px 0px 10px 10px;
+}
+
 
 #gameMain {
-    background-color: lightgray;
+    background-color: white;
+}
+
+#gameMessage {
+    height: 80px;
+}
+
+#divHeading, h3 {
+    margin-top: 5px;
 }
 
 .charimage {
@@ -27,12 +55,12 @@
     border: 4pt solid blue;
 }
 
-.hero {
+.hero, #heroContainer {
     border-radius: 25px;
     border: 4pt solid green;
 }
 
-.opp {
+.opp, #opponentContainer {
     border-radius: 25px;
     border: 4pt solid red;
 }

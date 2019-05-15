@@ -10,14 +10,6 @@ $(document).ready(function () {
     var oppIndex = 0;
     var characters = [];
 
-    var charButton = [];
-    var enemies = [];
-    var enemyButton = [];
-    var hero;
-    var heroButton;
-    var opponent;
-    var oppButton;
-
     // game character constuctor
     function GameCharacter(name, hp, bap, imgloc) {
         this.characterName = name;
@@ -29,14 +21,38 @@ $(document).ready(function () {
         this.counterAttackPower = bap;
     }
 
-    // create 4 game characters
-    var gChar1 = new GameCharacter("Sleipnir", 100, 10, "./assets/images/sleipnir.jpg");
-    var gChar2 = new GameCharacter("Hel", 110, 20, "./assets/images/hel.jpg");
-    var gChar3 = new GameCharacter("Fenrir", 150, 15, "./assets/images/fenrir.jpg");
-    var gChar4 = new GameCharacter("Jormungandr", 150, 12, "./assets/images/jormungandr.jpg");
+    function initGame() {
+    // initial values for global variables
+    heroSelected = false;
+    opponentSelected = false;
+    heroIndex = 0;
+    oppIndex = 0;
+    characters = [];
 
-    // create a game character array
-    characters = [gChar1, gChar2, gChar3, gChar4];
+        // create 4 game characters
+        var gChar1 = new GameCharacter("Sleipnir", 100, 10, "./assets/images/sleipnir.jpg");
+        var gChar2 = new GameCharacter("Hel", 110, 20, "./assets/images/hel.jpg");
+        var gChar3 = new GameCharacter("Fenrir", 150, 15, "./assets/images/fenrir.jpg");
+        var gChar4 = new GameCharacter("Jormungandr", 150, 12, "./assets/images/jormungandr.jpg");
+
+        // create a game character array
+        characters = [gChar1, gChar2, gChar3, gChar4];
+
+        // assign event for attack button
+        $("#btnAttack").on("click", attackOpponent);
+
+        // assgin event for re-start button
+        $("#btnReStart").on("click", function () {
+            initGame();
+            $("#modalGameEnd").modal("hide");
+        });
+
+        updateCharStatus();
+
+        // initial game message
+        postMessage("Choose a hero from the list of characters to begin.");
+
+    }
 
     function updateCharStatus() {
         for (var i = 0; i < characters.length; i++) {
@@ -114,25 +130,6 @@ $(document).ready(function () {
         }
         updateCharStatus();
     }
-    // create game containers and buttons
-    // characters inside character selection 
-    // comments out - replaced with function updateCharStatus
-    // for (var i = 0; i < characters.length; i++) {
-    //     charButton[i] = $("<button>");
-    //     charButton[i].attr("id", "char" + i);
-    //     charButton[i].attr("class", "character char");
-    //     charButton[i].attr("zone", "char");
-    //     charButton[i].attr("charindex", i);
-    //     charButton[i].html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
-    //     $("#chardiv"+i).append(charButton[i]);
-    //     $("#chardiv"+i).attr("charindex",i);
-    //     $("#chardiv"+i).on("click", chooseHero);
-    // }
-    updateCharStatus();
-    // initial game message
-    postMessage("Choose a hero from the list of characters to begin.");
-    // assign event for attack button
-    $("#btnAttack").on("click", attackOpponent);
 
     // hit function
     function hitSuccessful(prob) {
@@ -144,65 +141,6 @@ $(document).ready(function () {
     function postMessage(msg) {
         // alert (msg);
         $("#gameMessage").text(msg);
-    }
-
-    // handle hero selection
-    function chooseHero(event) {
-        if (!heroSelected) {
-            // user chooses a character to play as hero
-            heroindex = parseInt($(this).attr("charindex"));
-            hero = characters[heroindex]; // global variable re-assignment
-            // move hero to heroContainer
-            heroButton = $("#char" + heroindex);
-            heroButton.attr("class", "character hero");
-            heroButton.attr("zone", "hero");
-            charButton[heroindex].remove();
-            $("#herodiv").append(heroButton);
-            $("#herodiv" + i).attr("charindex", heroindex);
-            // cycle through characters assigning the remaining characters to enemies
-            idx = 0;
-            for (var i = 0; i < characters.length; i++) {
-                if (!(i === heroindex)) {
-                    enemies.push(characters[i]);
-                    // add enemies to enemyContainer
-                    enemyButton[enemyButton.length - 1] = $("#char" + i);
-                    enemyButton[enemyButton.length - 1].attr("class", "character enemy");
-                    enemyButton[enemyButton.length - 1].attr("zone", "enemy");
-                    charButton[i].remove();
-                    $("#enemydiv" + idx).append(enemyButton[enemyButton.length - 1]);
-                    // assign a button to the enemydiv
-                    $("#enemydiv" + idx).attr("charindex", i);
-                    $("#enemydiv" + idx).on("click", chooseOpponent);
-                    idx++;
-                }
-            }
-            heroSelected = true; // global variable re-assignment
-            postMessage("You seleted " + hero.characterName + " as your hero.  Now select an opponent from the remaining enemies");
-            // $(".char").hide();
-        }
-    }
-
-    // handle opponent selection
-    // $(".enemy").on("click", function () {
-    function chooseOpponent(event) {
-        if (!opponentSelected) {
-            oppindex = parseInt($(this).attr("charindex"));
-            opponent = characters[oppindex];
-            // create a copy of enemy
-            oppButton = $("#char" + oppindex);
-            // remove enemy from enemyContainer
-            $("#char" + oppindex).remove();
-            // add opponent to opponentContainer
-            oppButton.attr("class", "character opponent");
-            oppButton.attr("zone", "opponent");
-            $("#oppdiv").attr("charindex", oppindex);
-            $("#oppdiv").append(oppButton);
-            opponentSelected = true;
-            postMessage("You seleted " + opponent.characterName + " as your opponent.  Click the 'attack' button to attack your opponent until one of you is defeated.");
-            // Ready to battle
-            // NOTE enable the attack button
-            opponentSelected = true;
-        }
     }
 
     // Each time the attack button is pressed
@@ -270,7 +208,8 @@ $(document).ready(function () {
         }
     };
 
-
+    //start the game
+    initGame();
 
     // end of document.ready
 });
