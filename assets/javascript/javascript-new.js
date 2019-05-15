@@ -6,8 +6,11 @@ $(document).ready(function () {
     // initialize global variables
     var heroSelected = false;
     var opponentSelected = false;
-    var characters = [];   
-    var charButton = []; 
+    var heroIndex = 0;
+    var oppIndex = 0;
+    var characters = [];
+
+    var charButton = [];
     var enemies = [];
     var enemyButton = [];
     var hero;
@@ -34,24 +37,24 @@ $(document).ready(function () {
 
     // create a game character array
     characters = [gChar1, gChar2, gChar3, gChar4];
- 
+
     function updateCharStatus() {
         for (var i = 0; i < characters.length; i++) {
             // remove the character button if it exists
-            console.log("char" + i + "length: " + $("#char"+i).length);
-            if ($("#char"+i).length > 0) {
-                console.log ("removing char" + i);
-                $("#char"+i).remove();
+            console.log("char" + i + "length: " + $("#char" + i).length);
+            if ($("#char" + i).length > 0) {
+                console.log("removing char" + i);
+                $("#char" + i).remove();
             }
             // construct the character button
-            var characterButton =  $("<button>");
+            var characterButton = $("<button>");
             characterButton.attr("id", "char" + i);
             characterButton.attr("class", "character " + characters[i].status);
             characterButton.attr("zone", characters[i].status);
             characterButton.attr("charindex", i);
             characterButton.html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
-    
-            // place character button in its proper zone based on role
+
+            // place character button in its proper zone based on status
             switch (characters[i].status) {
                 case "char":
                     $("#characterContainer").append(characterButton);
@@ -66,41 +69,51 @@ $(document).ready(function () {
                     break;
                 case "hero":
                     $("#heroContainer").append(characterButton);
+                    heroSelected = true;
+                    heroIndex = i;
                     break;
                 case "enemy":
                     $("#enemyContainer").append(characterButton);
-                    $("#char" + i).on("click", function() {
+                    $("#char" + i).on("click", function () {
                         charIndex = $(this).attr("charindex");
                         selectOpponent(charIndex);
                     });
                     break;
                 case "opp":
                     $("#opponentContainer").append(characterButton);
+                    opponentSelected = true;
+                    oppIndex = i;
                     break;
-                default: 
+                default:
                     console.log("unhandled case for " & characters[i].status);
             }
         }
     }
 
-    function selectHero (idx) {
-        console.log("selected hero is char" + idx, characters[idx].characterName);
-        // update selected hero to status = "hero"
-        // and update other characters to status = "enemy"
-        for (var i = 0; i < characters.length; i++) {
-            if (idx == i) {
-                characters[i].status = "hero";
-            } else {
-                characters[i].status = "enemy";
+    function selectHero(idx) {
+        if (!heroSelected) {
+            console.log("selected hero is char" + idx, characters[idx].characterName);
+            // update selected hero to status = "hero"
+            // and update other characters to status = "enemy"
+            for (var i = 0; i < characters.length; i++) {
+                if (idx == i) {
+                    characters[i].status = "hero";
+                    postMessage("You seleted " + characters[i].characterName + " as your hero.  Now select an opponent from the remaining enemies");
+                } else {
+                    characters[i].status = "enemy";
+                }
             }
         }
         updateCharStatus();
     }
 
-    function selectOpponent (idx) {
-        console.log("selected opponent is char" + idx, characters[idx].characterName);
-        // update selected hero to status = "opp"
-        characters[idx].status = "opp";
+    function selectOpponent(idx) {
+        if (!opponentSelected) {
+            console.log("selected opponent is char" + idx, characters[idx].characterName);
+            // update selected hero to status = "opp"
+            characters[idx].status = "opp";
+            postMessage("You seleted " + characters[idx].characterName + " as your opponent.  Click the 'Attack!' button to attack your opponent until one of you is defeated.");
+        }
         updateCharStatus();
     }
     // create game containers and buttons
@@ -117,7 +130,7 @@ $(document).ready(function () {
     //     $("#chardiv"+i).attr("charindex",i);
     //     $("#chardiv"+i).on("click", chooseHero);
     // }
-    updateCharStatus();    
+    updateCharStatus();
     // initial game message
     postMessage("Choose a hero from the list of characters to begin.");
     // assign event for attack button
@@ -130,7 +143,7 @@ $(document).ready(function () {
     }
 
     // post a message to the message area
-    function postMessage (msg) {
+    function postMessage(msg) {
         // alert (msg);
         $("#gameMessage").text(msg);
     }
@@ -147,21 +160,21 @@ $(document).ready(function () {
             heroButton.attr("zone", "hero");
             charButton[heroindex].remove();
             $("#herodiv").append(heroButton);
-            $("#herodiv"+i).attr("charindex",heroindex);
+            $("#herodiv" + i).attr("charindex", heroindex);
             // cycle through characters assigning the remaining characters to enemies
             idx = 0;
             for (var i = 0; i < characters.length; i++) {
                 if (!(i === heroindex)) {
                     enemies.push(characters[i]);
                     // add enemies to enemyContainer
-                    enemyButton[enemyButton.length-1] = $("#char"+i);
-                    enemyButton[enemyButton.length-1].attr("class", "character enemy");
-                    enemyButton[enemyButton.length-1].attr("zone","enemy");
+                    enemyButton[enemyButton.length - 1] = $("#char" + i);
+                    enemyButton[enemyButton.length - 1].attr("class", "character enemy");
+                    enemyButton[enemyButton.length - 1].attr("zone", "enemy");
                     charButton[i].remove();
-                    $("#enemydiv"+idx).append(enemyButton[enemyButton.length-1]);
+                    $("#enemydiv" + idx).append(enemyButton[enemyButton.length - 1]);
                     // assign a button to the enemydiv
-                    $("#enemydiv"+idx).attr("charindex",i);
-                    $("#enemydiv"+idx).on("click", chooseOpponent);    
+                    $("#enemydiv" + idx).attr("charindex", i);
+                    $("#enemydiv" + idx).on("click", chooseOpponent);
                     idx++;
                 }
             }
@@ -184,7 +197,7 @@ $(document).ready(function () {
             // add opponent to opponentContainer
             oppButton.attr("class", "character opponent");
             oppButton.attr("zone", "opponent");
-            $("#oppdiv").attr("charindex",oppindex);
+            $("#oppdiv").attr("charindex", oppindex);
             $("#oppdiv").append(oppButton);
             opponentSelected = true;
             postMessage("You seleted " + opponent.characterName + " as your opponent.  Click the 'attack' button to attack your opponent until one of you is defeated.");
@@ -204,17 +217,15 @@ $(document).ready(function () {
             if (heroAttackSuccessful) {
                 // attack was successful!
                 // reduce HP of opponent
-                opponent.healthPoints -= hero.attackPower;
-                $("#hp" +characters.indexOf(opponent)).html = opponent.healthPoints;
-                console.log ("hp" + characters.indexOf(opponent) + " should change to " + opponent.healthPoints );
-                console.log("opponent health: " + opponent.healthPoints); // DEBUG
-                attackMessage += hero.characterName + " attacked " + opponent.characterName + " for " + hero.attackPower + " points of damage, reducing " + opponent.characterName + "'s health to " + opponent.healthPoints + ".  ";
+                characters[oppIndex].healthPoints -= characters[heroIndex].attackPower;
+                console.log("opponent health: " + characters[oppIndex].healthPoints); // DEBUG
+                attackMessage += characters[heroIndex].characterName + " attacked " + characters[oppIndex].characterName + " for " + characters[heroIndex].attackPower + " points of damage, reducing " + characters[oppIndex].characterName + "'s health to " + characters[oppIndex].healthPoints + ".  ";
                 // increase attack strength
-                hero.attackPower += hero.baseAttackPower;
-                console.log("hero attack power: " + hero.attackPower); // DEBUG
+                characters[heroIndex].attackPower += characters[heroIndex].baseAttackPower;
+                console.log("hero attack power: " + characters[heroIndex].attackPower); // DEBUG
                 postMessage(attackMessage);
                 // check if opponent defeated?
-                if (opponent.healthPoints < 1) {
+                if (characters[oppIndex].healthPoints < 1) {
                     // YES - move oppoent to graveyard and choose new opponent
                 }
                 // NO - continue
@@ -229,13 +240,13 @@ $(document).ready(function () {
             if (oppAttackSuccessful) {
                 // attack was successful!
                 // reduce HP of hero
-                hero.healthPoints -= opponent.counterAttackPower;
-                console.log("hero health: " + hero.healthPoints); // DEBUG
-                console.log("opponent counter-attack power" + opponent.counterAttackPower); // DEBUG
-                attackMessage += opponent.characterName + " counter-attacked " + hero.characterName + " for " + opponent.counterAttackPower + " points of damage, reducing " + hero.characterName + "'s health to " + hero.healthPoints + ".  ";
+                characters[heroIndex].healthPoints -= characters[oppIndex].counterAttackPower;
+                console.log("hero health: " + characters[heroIndex].healthPoints); // DEBUG
+                console.log("opponent counter-attack power" + characters[oppIndex].counterAttackPower); // DEBUG
+                attackMessage += characters[oppIndex].characterName + " counter-attacked " + characters[heroIndex].characterName + " for " + characters[oppIndex].counterAttackPower + " points of damage, reducing " + characters[heroIndex].characterName + "'s health to " + characters[heroIndex].healthPoints + ".  ";
                 postMessage(attackMessage);
                 // check if hero defeated
-                if (hero.healthPoints < 1) {
+                if (characters[heroIndex].healthPoints < 1) {
                     // YES - end game
                 }
                 // NO - end current attack
@@ -244,6 +255,7 @@ $(document).ready(function () {
                 // DEBUG - assuming 100% hits, so this is a problem
                 alert("Opponent missed!  Now THAT is not supposed to happen in this game.");
             }
+        updateCharStatus();
         }
     };
 
