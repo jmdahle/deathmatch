@@ -41,9 +41,8 @@ $(document).ready(function () {
     function updateCharStatus() {
         for (var i = 0; i < characters.length; i++) {
             // remove the character button if it exists
-            console.log("char" + i + "length: " + $("#char" + i).length);
             if ($("#char" + i).length > 0) {
-                console.log("removing char" + i);
+                // console.log("removing char" + i);
                 $("#char" + i).remove();
             }
             // construct the character button
@@ -62,10 +61,6 @@ $(document).ready(function () {
                         charIndex = $(this).attr("charindex");
                         selectHero(charIndex);
                     });
-                    // $("#chardiv" + charCounter).append(characterButton);
-                    // $("#chardiv" + charCounter).on("click", function() {
-                    //     alert("clicked on character");
-                    // });
                     break;
                 case "hero":
                     $("#heroContainer").append(characterButton);
@@ -83,6 +78,9 @@ $(document).ready(function () {
                     $("#opponentContainer").append(characterButton);
                     opponentSelected = true;
                     oppIndex = i;
+                    break;
+                case "grave":
+                    $("#graveyardContainer").append(characterButton);
                     break;
                 default:
                     console.log("unhandled case for " & characters[i].status);
@@ -218,44 +216,55 @@ $(document).ready(function () {
                 // attack was successful!
                 // reduce HP of opponent
                 characters[oppIndex].healthPoints -= characters[heroIndex].attackPower;
-                console.log("opponent health: " + characters[oppIndex].healthPoints); // DEBUG
                 attackMessage += characters[heroIndex].characterName + " attacked " + characters[oppIndex].characterName + " for " + characters[heroIndex].attackPower + " points of damage, reducing " + characters[oppIndex].characterName + "'s health to " + characters[oppIndex].healthPoints + ".  ";
                 // increase attack strength
                 characters[heroIndex].attackPower += characters[heroIndex].baseAttackPower;
-                console.log("hero attack power: " + characters[heroIndex].attackPower); // DEBUG
-                postMessage(attackMessage);
                 // check if opponent defeated?
                 if (characters[oppIndex].healthPoints < 1) {
                     // YES - move oppoent to graveyard and choose new opponent
+                    characters[oppIndex].status = "grave";
+                    opponentSelected = false;
+                    attackMessage += characters[oppIndex].characterName + " was defeated!"
+                    // check if there are any enemies remaining
+                    console.log ($(".enemy").length + " enemies remain", $(".enemy"));
+                    if ($(".enemy").length < 1) {
+                        // no enemies remain - the game is won!
+                        alert ("you won!");
+                    } else {
+                        // enemies remain - choose a new opponent
+                        attackMessage += "  Choose a new opponent.";
+                    }
                 }
+                postMessage(attackMessage);
                 // NO - continue
             } else {
                 // attack was un-successful!
                 // DEBUG - assuming 100% hits, so this is a problem
                 alert("Hero missed!  Now THAT is not supposed to happen in this game.");
             }
-            // opponent counter attack
-            // if successful (in this game, always is)
-            var oppAttackSuccessful = hitSuccessful(100);
-            if (oppAttackSuccessful) {
-                // attack was successful!
-                // reduce HP of hero
-                characters[heroIndex].healthPoints -= characters[oppIndex].counterAttackPower;
-                console.log("hero health: " + characters[heroIndex].healthPoints); // DEBUG
-                console.log("opponent counter-attack power" + characters[oppIndex].counterAttackPower); // DEBUG
-                attackMessage += characters[oppIndex].characterName + " counter-attacked " + characters[heroIndex].characterName + " for " + characters[oppIndex].counterAttackPower + " points of damage, reducing " + characters[heroIndex].characterName + "'s health to " + characters[heroIndex].healthPoints + ".  ";
-                postMessage(attackMessage);
-                // check if hero defeated
-                if (characters[heroIndex].healthPoints < 1) {
-                    // YES - end game
+            // if opponent exists (was not defeated)
+            if (opponentSelected) {
+                // opponent counter attack
+                // if successful (in this game, always is)
+                var oppAttackSuccessful = hitSuccessful(100);
+                if (oppAttackSuccessful) {
+                    // attack was successful!
+                    // reduce HP of hero
+                    characters[heroIndex].healthPoints -= characters[oppIndex].counterAttackPower;
+                    attackMessage += characters[oppIndex].characterName + " counter-attacked " + characters[heroIndex].characterName + " for " + characters[oppIndex].counterAttackPower + " points of damage, reducing " + characters[heroIndex].characterName + "'s health to " + characters[heroIndex].healthPoints + ".  ";
+                    postMessage(attackMessage);
+                    // check if hero defeated
+                    if (characters[heroIndex].healthPoints < 1) {
+                        // YES - end game
+                    }
+                    // NO - end current attack
+                } else {
+                    // attack was un-successful!
+                    // DEBUG - assuming 100% hits, so this is a problem
+                    alert("Opponent missed!  Now THAT is not supposed to happen in this game.");
                 }
-                // NO - end current attack
-            } else {
-                // attack was un-successful!
-                // DEBUG - assuming 100% hits, so this is a problem
-                alert("Opponent missed!  Now THAT is not supposed to happen in this game.");
             }
-        updateCharStatus();
+            updateCharStatus();
         }
     };
 
