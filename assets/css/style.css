@@ -1,4 +1,3 @@
-
 #gameMain, #titleContainer, #messageContainer, #charContainer, #arena, #enemyContainer, #graveyardContainer {
     border: 1px solid red;
 }
@@ -11,17 +10,10 @@
     background-color: lightgray;
 }
 
-#characterContainer, .charcontainer {
-    display: inline; 
-}
-
-#message {
-    font-weight: bold;
-}
-
 .charimage {
     width: 70px;
 }
+
 .character {
     width: 120px;
     height: 120px;
@@ -31,17 +23,26 @@
 }
 
 .char {
+    border-radius: 25px;
     border: 4pt solid blue;
 }
 
 .hero {
+    border-radius: 25px;
     border: 4pt solid green;
 }
 
 .opp {
+    border-radius: 25px;
     border: 4pt solid red;
 }
 
 .enemy {
+    border-radius: 25px;
     border: 4pt solid orange;
+}
+
+.grave {
+    border-radius: 25px;
+    border: 4pt solid black;
 }

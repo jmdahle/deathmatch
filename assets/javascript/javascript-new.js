@@ -226,10 +226,10 @@ $(document).ready(function () {
                     opponentSelected = false;
                     attackMessage += characters[oppIndex].characterName + " was defeated!"
                     // check if there are any enemies remaining
-                    console.log ($(".enemy").length + " enemies remain", $(".enemy"));
                     if ($(".enemy").length < 1) {
                         // no enemies remain - the game is won!
-                        alert ("you won!");
+                        $("#messageGameEnd").text("You defeated all of your opponents!  Congratulations.");
+                        $("#modalGameEnd").modal("show");
                     } else {
                         // enemies remain - choose a new opponent
                         attackMessage += "  Choose a new opponent.";
@@ -256,6 +256,8 @@ $(document).ready(function () {
                     // check if hero defeated
                     if (characters[heroIndex].healthPoints < 1) {
                         // YES - end game
+                        $("#messageGameEnd").text("You were defeated by " + characters[oppIndex].characterName + ".  Better luck next time.");
+                        $("#modalGameEnd").modal("show");
                     }
                     // NO - end current attack
                 } else {
