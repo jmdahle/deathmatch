@@ -18,6 +18,7 @@ $(document).ready(function () {
     // game character constuctor
     function GameCharacter(name, hp, bap, imgloc) {
         this.characterName = name;
+        this.status = "char"; //other roles: enemy hero opp grave
         this.healthPoints = hp;
         this.baseAttackPower = bap;
         this.charImage = imgloc;
@@ -34,20 +35,89 @@ $(document).ready(function () {
     // create a game character array
     characters = [gChar1, gChar2, gChar3, gChar4];
  
+    function updateCharStatus() {
+        for (var i = 0; i < characters.length; i++) {
+            // remove the character button if it exists
+            console.log("char" + i + "length: " + $("#char"+i).length);
+            if ($("#char"+i).length > 0) {
+                console.log ("removing char" + i);
+                $("#char"+i).remove();
+            }
+            // construct the character button
+            var characterButton =  $("<button>");
+            characterButton.attr("id", "char" + i);
+            characterButton.attr("class", "character " + characters[i].status);
+            characterButton.attr("zone", characters[i].status);
+            characterButton.attr("charindex", i);
+            characterButton.html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
+    
+            // place character button in its proper zone based on role
+            switch (characters[i].status) {
+                case "char":
+                    $("#characterContainer").append(characterButton);
+                    $("#char" + i).on("click", function () {
+                        charIndex = $(this).attr("charindex");
+                        selectHero(charIndex);
+                    });
+                    // $("#chardiv" + charCounter).append(characterButton);
+                    // $("#chardiv" + charCounter).on("click", function() {
+                    //     alert("clicked on character");
+                    // });
+                    break;
+                case "hero":
+                    $("#heroContainer").append(characterButton);
+                    break;
+                case "enemy":
+                    $("#enemyContainer").append(characterButton);
+                    $("#char" + i).on("click", function() {
+                        charIndex = $(this).attr("charindex");
+                        selectOpponent(charIndex);
+                    });
+                    break;
+                case "opp":
+                    $("#opponentContainer").append(characterButton);
+                    break;
+                default: 
+                    console.log("unhandled case for " & characters[i].status);
+            }
+        }
+    }
+
+    function selectHero (idx) {
+        console.log("selected hero is char" + idx, characters[idx].characterName);
+        // update selected hero to status = "hero"
+        // and update other characters to status = "enemy"
+        for (var i = 0; i < characters.length; i++) {
+            if (idx == i) {
+                characters[i].status = "hero";
+            } else {
+                characters[i].status = "enemy";
+            }
+        }
+        updateCharStatus();
+    }
+
+    function selectOpponent (idx) {
+        console.log("selected opponent is char" + idx, characters[idx].characterName);
+        // update selected hero to status = "opp"
+        characters[idx].status = "opp";
+        updateCharStatus();
+    }
     // create game containers and buttons
     // characters inside character selection 
-    for (var i = 0; i < characters.length; i++) {
-        charButton[i] = $("<button>");
-        charButton[i].attr("id", "char" + i);
-        charButton[i].attr("class", "character char");
-        charButton[i].attr("zone", "char");
-        charButton[i].attr("charindex", i);
-        charButton[i].html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
-        $("#chardiv"+i).append(charButton[i]);
-        $("#chardiv"+i).attr("charindex",i);
-        $("#chardiv"+i).on("click", chooseHero);
-    }
-    
+    // comments out - replaced with function updateCharStatus
+    // for (var i = 0; i < characters.length; i++) {
+    //     charButton[i] = $("<button>");
+    //     charButton[i].attr("id", "char" + i);
+    //     charButton[i].attr("class", "character char");
+    //     charButton[i].attr("zone", "char");
+    //     charButton[i].attr("charindex", i);
+    //     charButton[i].html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
+    //     $("#chardiv"+i).append(charButton[i]);
+    //     $("#chardiv"+i).attr("charindex",i);
+    //     $("#chardiv"+i).on("click", chooseHero);
+    // }
+    updateCharStatus();    
     // initial game message
     postMessage("Choose a hero from the list of characters to begin.");
     // assign event for attack button

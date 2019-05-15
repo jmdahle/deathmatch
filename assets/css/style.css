@@ -11,7 +11,7 @@
     background-color: lightgray;
 }
 
-#charContainer {
+#characterContainer, .charcontainer {
     display: inline; 
 }
 
@@ -38,7 +38,7 @@
     border: 4pt solid green;
 }
 
-.opponent {
+.opp {
     border: 4pt solid red;
 }
 
