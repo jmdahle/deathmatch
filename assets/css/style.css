@@ -1,3 +1,7 @@
+* {
+    font-family: 'Uncial Antiqua', 'Macondo Swash Caps', cursive;
+}
+
 #characterContainer, #enemyContainer, #graveyardContainer {
     border-radius: 25px;
     margin: 10px 0px 10px 10px;
@@ -24,7 +28,6 @@
     text-align: center;
     margin: 10px 0px 10px 10px;
 }
-
 
 #gameMain {
     background-color: white;
