@@ -150,6 +150,7 @@ $(document).ready(function () {
                 // attack was successful!
                 // reduce HP of opponent
                 characters[oppIndex].healthPoints -= characters[heroIndex].attackPower;
+                // append message
                 attackMessage += characters[heroIndex].characterName + " attacked " + characters[oppIndex].characterName + " for " + characters[heroIndex].attackPower + " points of damage, reducing " + characters[oppIndex].characterName + "'s health to " + characters[oppIndex].healthPoints + ".  ";
                 // increase attack strength
                 characters[heroIndex].attackPower += characters[heroIndex].baseAttackPower;
@@ -158,6 +159,7 @@ $(document).ready(function () {
                     // YES - move oppoent to graveyard and choose new opponent
                     characters[oppIndex].status = "grave";
                     opponentSelected = false;
+                    // append message
                     attackMessage += characters[oppIndex].characterName + " was defeated!"
                     // check if there are any enemies remaining
                     if ($(".enemy").length < 1) {
@@ -166,6 +168,7 @@ $(document).ready(function () {
                         $("#modalGameEnd").modal("show");
                     } else {
                         // enemies remain - choose a new opponent
+                        // append to message
                         attackMessage += "  Choose a new opponent.";
                     }
                 }
