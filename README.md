@@ -20,7 +20,9 @@ After each successful "hit" on an opponent, the hero's attack points increases. 
 A character is "defeated" when its health points are reduced to 0 or less.  The game is complete when either the hero is defeated or the hero defeats all of the enemies.
 
 ### Technical Notes
-The gameplay is written in JavaScript and the JQuery library.  Bootstrrap is also used to generate UI controls and layout.  The movement of character icons from one zone to another is handled using `remove` and `append` methods in JQuery.
+The gameplay is written in JavaScript and the JQuery library.  Bootstrrap is also used to generate UI controls and layout.  The movement of character icons from one zone to another is handled using `remove` and `append` methods in JQuery.  To make the game somewhat strategic, the health points and attack points of the characters is randomly determined each time.
+
+The `testcases.html` and `testcases.js` files were used to simulate all possible matchups to see if certain HP and AP combinations produces "fair" games (possible to win or lose with any character as your hero).  And later, to test the random HP and AP generator.
 
 ### Credits
 * Background image retrieved from https://bavipower.com/blogs/bavipower-viking-blog/10-things-about-ragnarok-that-you-dont-know

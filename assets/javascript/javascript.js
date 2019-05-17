@@ -28,6 +28,15 @@ $(document).ready(function () {
         this.attackPower = bap;
         this.counterAttackPower = bap;
     }
+    function getHP () {
+        // hp can be between 30-100
+        return (Math.floor(Math.random()*8)+3)*10;
+    }
+
+    function getAP () {
+        // ap can be between 2-10
+        return Math.floor(Math.random()*10)+2;
+    }
 
     function initGame() {
         // initial values for global variables
@@ -38,10 +47,15 @@ $(document).ready(function () {
         characters = [];
 
         // create 4 game characters
-        var gChar1 = new GameCharacter("Sleipnir", 100, 10, "./assets/images/sleipnir.jpg");
-        var gChar2 = new GameCharacter("Hel", 110, 20, "./assets/images/hel.jpg");
-        var gChar3 = new GameCharacter("Fenrir", 150, 15, "./assets/images/fenrir.jpg");
-        var gChar4 = new GameCharacter("Jormungandr", 150, 12, "./assets/images/jormungandr.jpg");
+        // var gChar1 = new GameCharacter("Sleipnir", 100, 10, "./assets/images/sleipnir.jpg");
+        // var gChar2 = new GameCharacter("Hel", 110, 20, "./assets/images/hel.jpg");
+        // var gChar3 = new GameCharacter("Fenrir", 150, 15, "./assets/images/fenrir.jpg");
+        // var gChar4 = new GameCharacter("Jormungandr", 150, 12, "./assets/images/jormungandr.jpg");
+        // decided to replace with RANDOM values
+        var gChar1 = new GameCharacter("Sleipnir", getHP(), getAP(), "./assets/images/sleipnir.jpg");
+        var gChar2 = new GameCharacter("Hel", getHP(), getAP(), "./assets/images/hel.jpg");
+        var gChar3 = new GameCharacter("Fenrir", getHP(), getAP(), "./assets/images/fenrir.jpg");
+        var gChar4 = new GameCharacter("Jormungandr", getHP(), getAP(), "./assets/images/jormungandr.jpg");
 
         // create a game character array
         characters = [gChar1, gChar2, gChar3, gChar4];
@@ -65,6 +79,11 @@ $(document).ready(function () {
             characterButton.attr("class", "character " + characters[i].status);
             characterButton.attr("zone", characters[i].status);
             characterButton.attr("charindex", i);
+            // add a bootstrap tool tip with HP, AP
+            var tooltipText = "Health: " + characters[i].healthPoints + " Attack: " + characters[i].attackPower;
+            characterButton.attr("data-toggle","tooltip");
+            // characterButton.attr("data-placement","top");
+            characterButton.attr("title",tooltipText);
             characterButton.html(characters[i].characterName + "<br><img class='charimage' src='" + characters[i].charImage + "'><br><div id='hp" + i + "' class='hp'>" + characters[i].healthPoints + "hp</div>");
 
             // place character button in its proper zone based on status

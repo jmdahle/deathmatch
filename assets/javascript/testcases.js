@@ -45,11 +45,32 @@ var char = []
 // char.push (["Darth Sidious",150,20]);
 // char.push (["Darth Maul",100,25]);
 
-// these are proposed changes
-char.push (["Sleipnir",100,6]);
-char.push (["Hel",80,8]);
-char.push (["Fenrir",70,12]);
-char.push (["Jormungandr",40,30]);
+// these are proposed changes with FIXED attributes
+// char.push (["Sleipnir",100,6]);
+// char.push (["Hel",80,8]);
+// char.push (["Fenrir",70,12]);
+// char.push (["Jormungandr",40,30]);
+
+// char.push (["Sleipnir",60,3]);
+// char.push (["Hel",40,5]);
+// char.push (["Fenrir",50,10]);
+// char.push (["Jormungandr",50,4]);
+
+// recommended solution - randomly generated values
+function getHP () {
+	// hp can be between 30-100
+	return (Math.floor(Math.random()*8)+3)*10;
+}
+
+function getAP () {
+// ap can be between 2-10
+	return Math.floor(Math.random()*10)+2;
+}
+
+char.push (["Sleipnir",getHP(), getAP()]);
+char.push (["Hel",getHP(), getAP()]);
+char.push (["Fenrir",getHP(), getAP()]);
+char.push (["Jormungandr",getHP(), getAP()]);
 
 
 var numWins = [0,0,0,0]; // hero wins by hero index
